@@ -1,0 +1,1 @@
+D:\projects\backup\Trakkitapi\api-gateway\build\classes\kotlin\main\com\cdev\api\gateway\ApiGateway.class

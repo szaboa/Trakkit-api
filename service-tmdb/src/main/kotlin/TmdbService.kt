@@ -8,14 +8,18 @@ import io.ktor.client.call.call
 import io.ktor.client.call.receive
 import io.ktor.client.features.json.GsonSerializer
 import io.ktor.client.features.json.JsonFeature
-import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpMethod
 
+/**
+ * Service that fetches data from TMDB.
+ * See https://www.themoviedb.org.
+ */
 class TmdbService {
 
-    companion object{
-        val API_KEY = "df21461253277ed207247498065870cf"
+    companion object {
+        const val BASE_URL = "https://api.themoviedb.org/3/tv"
+        const val API_KEY = "df21461253277ed207247498065870cf"
     }
 
     private val client = HttpClient() {
@@ -24,20 +28,27 @@ class TmdbService {
         }
     }
 
-    suspend fun getPopularContent(): ArrayList<TvSeries> {
-
-        val call = client.get("/popular")
-        val response = call.response.receive<TvSeriesResult>()
+    suspend fun getCategory(categoryId: String?): ArrayList<TvSeries> {
         val result = ArrayList<TvSeries>()
-        for (tvSeries in response.result) {
-            result.add(tvSeries)
+
+        val url = TmdbCategoryMapper.map(categoryId) ?: return result
+        val call = client.get(url)
+        val response = call.response.receive<TvSeriesResult>()
+
+        response.result?.let {
+            for (tvSeries in it) {
+                result.add(tvSeries)
+            }
         }
 
         return result
     }
 
-    suspend fun HttpClient.get(url: String) : HttpClientCall{
-        return client.call("https://api.themoviedb.org/3/tv$url") {
+    /**
+     * Extension function that appends the api key for a GET request.
+     */
+    suspend fun HttpClient.get(url: String): HttpClientCall {
+        return client.call(BASE_URL + url) {
             method = HttpMethod.Get
             parameter("api_key", API_KEY)
         }

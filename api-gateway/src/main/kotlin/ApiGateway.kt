@@ -13,7 +13,7 @@ class ApiGateway {
         return configService.getConfig()
     }
 
-    suspend fun getPopularContent(): ArrayList<TvSeries>{
-        return tmdbService.getPopularContent()
+    suspend fun getCategory(categoryId: String?): ArrayList<TvSeries>{
+        return tmdbService.getCategory(categoryId)
     }
 }

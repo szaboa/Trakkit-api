@@ -11,7 +11,8 @@ fun Routing.trakkitApi(apiGateway: ApiGateway) {
         call.respond(apiGateway.getFrontPageConfig())
     }
 
-    get("/popular") {
-        call.respond(apiGateway.getPopularContent())
+    get("/category/{categoryId}") {
+        val categoryId = call.parameters["categoryId"]
+        call.respond(apiGateway.getCategory(categoryId))
     }
 }

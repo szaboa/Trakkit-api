@@ -24,10 +24,7 @@ fun main(args: Array<String>) {
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     val apiGateway = ApiGateway()
-    moduleWithDependencies(apiGateway)
-}
 
-fun Application.moduleWithDependencies(apiGateway: ApiGateway) {
     install(CallLogging)
 
     install(Routing) {

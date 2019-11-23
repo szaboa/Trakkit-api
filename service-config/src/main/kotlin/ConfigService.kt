@@ -19,11 +19,11 @@ class ConfigService {
         client = FirestoreClient.getFirestore()
     }
 
-    suspend fun getConfig(): FrontPageConfig {
+    suspend fun getConfig(): ArrayList<FrontPageConfig> {
         val querySnapshot = client.collection("config").get().await()
-        val components = ArrayList<FrontPageComponent>()
+        val components = ArrayList<FrontPageConfig>()
         for (document in querySnapshot.documents) {
-            val component = FrontPageComponent(
+            val component = FrontPageConfig(
                 document.data["id"] as Long,
                 document.data["name"] as String,
                 document.data["type"] as String
@@ -32,6 +32,6 @@ class ConfigService {
             components.add(component)
         }
 
-        return FrontPageConfig(components)
+        return components
     }
 }

@@ -1,14 +1,7 @@
-/.gradle
+**/.gradle
+**/build
 /.idea
-/out
-/build
+**/out
 *.iml
 *.ipr
 *.iws
-/api-gateway/build
-/api-rest/build
-/api-rest/.gradle
-/service-config/build
-/service-config/.gradle
-/service-tmdb/build
-/service-tmdb/

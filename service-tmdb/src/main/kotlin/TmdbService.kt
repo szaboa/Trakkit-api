@@ -1,11 +1,13 @@
 package com.cdev.service.tmdb
 
-import com.cdev.service.tmdb.model.TvSeries
-import com.cdev.service.tmdb.model.TvSeriesResult
+import com.cdev.service.tmdb.model.TmdbTvSeason
+import com.cdev.service.tmdb.model.TmdbTvSeries
+import com.cdev.service.tmdb.model.TmdbTvSeriesResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.HttpClientCall
 import io.ktor.client.call.call
 import io.ktor.client.call.receive
+import io.ktor.client.features.ClientRequestException
 import io.ktor.client.features.json.GsonSerializer
 import io.ktor.client.features.json.JsonFeature
 import io.ktor.client.request.parameter
@@ -28,12 +30,25 @@ class TmdbService {
         }
     }
 
-    suspend fun getCategory(categoryId: String?): ArrayList<TvSeries> {
-        val result = ArrayList<TvSeries>()
+    suspend fun getPopular(): ArrayList<TmdbTvSeries> {
+        val result = ArrayList<TmdbTvSeries>()
+        val call = client.get("/popular")
+        val response = call.response.receive<TmdbTvSeriesResult>()
 
-        val url = TmdbCategoryMapper.map(categoryId) ?: return result
-        val call = client.get(url)
-        val response = call.response.receive<TvSeriesResult>()
+        // TODO add ext func for this
+        response.result?.let {
+            for (tvSeries in it) {
+                result.add(tvSeries)
+            }
+        }
+
+        return result
+    }
+
+    suspend fun getOnTheAir(): ArrayList<TmdbTvSeries> {
+        val result = ArrayList<TmdbTvSeries>()
+        val call = client.get("/on_the_air")
+        val response = call.response.receive<TmdbTvSeriesResult>()
 
         response.result?.let {
             for (tvSeries in it) {
@@ -42,6 +57,54 @@ class TmdbService {
         }
 
         return result
+    }
+
+    suspend fun getAiringToday(): ArrayList<TmdbTvSeries> {
+        val result = ArrayList<TmdbTvSeries>()
+        val call = client.get("/airing_today")
+        val response = call.response.receive<TmdbTvSeriesResult>()
+
+        response.result?.let {
+            for (tvSeries in it) {
+                result.add(tvSeries)
+            }
+        }
+
+        return result
+    }
+
+    suspend fun getTopRated(): ArrayList<TmdbTvSeries> {
+        val result = ArrayList<TmdbTvSeries>()
+        val call = client.get("/top_rated")
+        val response = call.response.receive<TmdbTvSeriesResult>()
+
+        response.result?.let {
+            for (tvSeries in it) {
+                result.add(tvSeries)
+            }
+        }
+
+        return result
+    }
+
+    suspend fun getTvSeriesDetails(id: Int): TmdbTvSeries? {
+        val call = client.get("/$id")
+        return try {
+            call.response.receive<TmdbTvSeries>()
+        } catch (e: ClientRequestException) {
+            // Not found
+            null
+        }
+    }
+
+    suspend fun getTvSeason(id: Int, seasonNumber: Int): TmdbTvSeason? {
+        val call = client.get("/$id/season/$seasonNumber")
+        return try {
+            call.response.receive<TmdbTvSeason>()
+        } catch (e: ClientRequestException) {
+            // Not found
+            null
+        }
     }
 
     /**

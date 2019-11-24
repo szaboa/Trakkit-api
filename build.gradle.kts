@@ -36,16 +36,22 @@ subprojects {
 }
 
 project(":api-rest") {
-    dependencies{
+    dependencies {
         implementation(project(":api-gateway"))
         implementation(project(":service-config"))
-        implementation(project(":service-tmdb"))
+        implementation(project(":service-data"))
     }
 }
 
 project(":api-gateway") {
-    dependencies{
+    dependencies {
         implementation(project(":service-config"))
+        implementation(project(":service-data"))
+    }
+}
+
+project(":service-data") {
+    dependencies {
         implementation(project(":service-tmdb"))
     }
 }

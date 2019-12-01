@@ -26,4 +26,9 @@ fun Routing.trakkitApi(apiGateway: ApiGateway) {
         val seasonNumber = call.parameters["season_number"]
         call.respond(apiGateway.getTvSeason(id, seasonNumber))
     }
+
+    get("/search") {
+        val query: String? = call.request.queryParameters["query"]
+        call.respond(apiGateway.search(query))
+    }
 }

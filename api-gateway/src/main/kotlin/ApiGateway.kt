@@ -50,4 +50,13 @@ class ApiGateway {
         val message = if (success) "TV Season found" else "TV Season not found"
         return Response(success, message, season)
     }
+
+    suspend fun search(query: String?): Response<List<TvSeries>> {
+        if (query == null) {
+            return Response(false, ResponseMessage.INVALID_PARAM, ArrayList())
+        }
+
+        val seriesList = dataService.search(query)
+        return Response(true, "Search returned", seriesList)
+    }
 }

@@ -30,4 +30,9 @@ class DataService() {
         val details = tmdbService.getTvSeason(id.toInt(), seasonNumber.toInt()) ?: return null
         return TmdbServiceMapper.mapSeason(details)
     }
+
+    suspend fun search(query: String) : List<TvSeries>{
+        val seriesList = tmdbService.search(query)
+        return TmdbServiceMapper.mapSeriesList(seriesList)
+    }
 }
